@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using Unity.Rendering.Toon;
+#if SRPCORE_IS_INSTALLED_FOR_UTS
 namespace UnityEditor.Rendering.Toon
 {
     [CustomEditor(typeof(ToonEvAdjustmentCurve))]
@@ -145,3 +146,4 @@ namespace UnityEditor.Rendering.Toon
 
     }
 }
+#endif //#if SRPCORE_IS_INSTALLED_FOR_UTS

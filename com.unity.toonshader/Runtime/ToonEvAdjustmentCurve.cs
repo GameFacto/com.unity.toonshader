@@ -7,6 +7,8 @@ using UnityEditor;
 using UnityEngine.Rendering;
 using UnityEngine.Experimental.Rendering;
 using UnityObject = UnityEngine.Object;
+
+#if SRPCORE_IS_INSTALLED_FOR_UTS
 namespace Unity.Rendering.Toon
 {
     [ExecuteAlways]
@@ -184,3 +186,4 @@ namespace Unity.Rendering.Toon
 
 
 }
+#endif

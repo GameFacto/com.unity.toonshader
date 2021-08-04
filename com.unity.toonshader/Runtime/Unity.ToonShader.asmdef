@@ -18,6 +18,11 @@
             "name": "com.unity.render-pipelines.universal",
             "expression": "",
             "define": "URP_IS_INSTALLED_FOR_UTS"
+        },
+        {
+            "name": "com.unity.render-pipelines.core",
+            "expression": "",
+            "define": "SRPCORE_IS_INSTALLED_FOR_UTS"
         }
     ],
     "noEngineReferences": false
