@@ -7,13 +7,16 @@ using UnityEditor;
 using UnityEngine.Rendering;
 using UnityEngine.Experimental.Rendering;
 using UnityObject = UnityEngine.Object;
+using System;
 
 #if SRPCORE_IS_INSTALLED_FOR_UTS
 namespace Unity.Rendering.Toon
 {
-    [ExecuteAlways]
-    [DisallowMultipleComponent]
-    public class ToonEvAdjustmentCurve : MonoBehaviour
+    /// <summary>
+    /// A volume component that holds settings for the Toon Ev Adjustment Curve.
+    /// </summary>
+    [Serializable, VolumeComponentMenu("Toon/EV Adjustment Curve")]
+    public sealed class ToonEvAdjustmentCurve : VolumeComponent
     {
         // flags
         bool m_initialized = false;
@@ -47,6 +50,20 @@ namespace Unity.Rendering.Toon
 #pragma warning restore CS0414
         bool m_isCompiling = false;
 #endif
+        /// <summary>
+        /// Specifies the method that Toon Shader uses to adjust the EV.
+        /// This parameter is only used when <see cref="ToonEvAdjustmentCurve.adjustmentMode"/> is set.
+        /// </summary>
+        [Tooltip("Specifies the method that Toon Shader uses to adjust the EV.")]
+        public ToonEVAdjustmentModeParamater adjustmentMode = new ToonEVAdjustmentModeParamater(ToonEVAdjustmentMode.NoAdjustment);
+
+        /// <summary>
+        /// Specifies a curve that remaps the Toon exposure on the x-axis to the EV you want on the y-axis.
+        /// This parameter is only used when <see cref="ToonEvAdjustmentCurve.adjustmentMode"/> is set.
+        /// </summary>
+        [Tooltip("Specifies a curve that remaps the Toon EV on the x-axis to the EV you want on the y-axis.")]
+        public AnimationCurveParameter curveMap = new AnimationCurveParameter(AnimationCurve.Linear(-10f, -10f, 16f, 16f)); // TODO: Use TextureCurve instead?
+
 
 
         void Update()
@@ -119,7 +136,7 @@ namespace Unity.Rendering.Toon
                 m_srpCallbackInitialized = false;
             }
         }
-
+        /*
         void OnEnable()
         {
 
@@ -135,7 +152,7 @@ namespace Unity.Rendering.Toon
 
             Release();
         }
-
+        */
         void Initialize()
         {
             if (m_initialized)
@@ -166,24 +183,38 @@ namespace Unity.Rendering.Toon
             m_initialized = false;
             Shader.SetGlobalInt(kExposureAdjustmentPorpName, 0);
         }
-/*
-        public static void DestroyUnityObject(UnityObject obj)
-        {
-            if (obj != null)
-            {
-#if UNITY_EDITOR
-                if (Application.isPlaying)
-                    UnityObject.Destroy(obj);
-                else
-                    UnityObject.DestroyImmediate(obj);
-#else
-                UnityObject.Destroy(obj);
-#endif
-            }
-        }
-*/
     }
 
+    /// <summary>
+    /// Methods that HDRP uses to change the exposure when the Camera moves from dark to light and vice versa.
+    /// </summary>
+    /// <seealso cref="Exposure.adjustmentMode"/>
+    public enum ToonEVAdjustmentMode
+    {
+        /// <summary>
+        /// No Adjustment
+        /// </summary>
+        NoAdjustment,
+
+        /// <summary>
+        /// The EV changes correspond with the curve.
+        /// </summary>
+        CurveAdjustment
+    }
+
+    /// <summary>
+    /// A <see cref="VolumeParameter"/> that holds a <see cref="ToonEVAdjustmentMode"/> value.
+    /// </summary>
+    [Serializable]
+    public sealed class ToonEVAdjustmentModeParamater : VolumeParameter<ToonEVAdjustmentMode>
+    {
+        /// <summary>
+        /// Creates a new <see cref="ToonEVAdjustmentModeParamater"/> instance.
+        /// </summary>
+        /// <param name="value">The initial value to store in the parameter.</param>
+        /// <param name="overrideState">The initial override state for the parameter.</param>
+        public ToonEVAdjustmentModeParamater(ToonEVAdjustmentMode value, bool overrideState = false) : base(value, overrideState) { }
+    }
 
 }
 #endif
