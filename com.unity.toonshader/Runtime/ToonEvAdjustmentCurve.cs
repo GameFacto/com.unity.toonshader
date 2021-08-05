@@ -136,9 +136,10 @@ namespace Unity.Rendering.Toon
                 m_srpCallbackInitialized = false;
             }
         }
-        /*
+
         void OnEnable()
         {
+            base.OnEnable();
 
             Initialize();
 
@@ -151,8 +152,9 @@ namespace Unity.Rendering.Toon
             DisableSrpCallbacks();
 
             Release();
+            base.OnDisable();
         }
-        */
+
         void Initialize()
         {
             if (m_initialized)
